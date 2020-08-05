@@ -398,23 +398,6 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 		<?endif;?>
         <div class="product-info__tab-body product-info__tab-body--descr" id="body-visible">
             <p><?=htmlspecialchars_decode($arResult['DETAIL_TEXT'])?></p>
-			<h4>Видео</h4>
-            <? if ($arResult['PROPERTIES']['YOUTUBELINK']['VALUE']) : ?>
-            <div class="product-info__tab-videos">
-                <div class="tab-videos fotorama" data-nav="thumbs" data-thumbwidth="145" data-thumbheight="78" data-fit="cover" data-width="100%" data-maxwidth="915px" data-maxheight="459px" data-thumbmargin="10px 10px 0 0" data-thumbborderwidth="0" data-ratio="800/600">
-                    <a href="https://www.youtube.com/watch?v=<?=$arResult['PROPERTIES']['YOUTUBELINK']['VALUE']?>"></a>
-                    	<? if ($arResult['PROPERTIES']['YOUTUBELINK_2']['VALUE']) : ?>
-                    		<a href="https://www.youtube.com/watch?v=<?=$arResult['PROPERTIES']['YOUTUBELINK_2']['VALUE']?>"></a>
-                    	<? endif; ?>
-                    	<? if ($arResult['PROPERTIES']['YOUTUBELINK_3']['VALUE']) : ?>
-                        	<a href="https://www.youtube.com/watch?v=<?=$arResult['PROPERTIES']['YOUTUBELINK_3']['VALUE']?>"></a>
-                    	<? endif; ?>
-                    	<? if ($arResult['PROPERTIES']['YOUTUBELINK_4']['VALUE']) : ?>
-                        	<a href="https://www.youtube.com/watch?v=<?=$arResult['PROPERTIES']['YOUTUBELINK_4']['VALUE']?>"></a>
-                    	<? endif; ?>
-                </div>
-            </div>
-            <? endif; ?>
 
             <?if($arResult["SECTION"]["PATH"][0]['ID']==1104):?>
                 <a class="dv-tablesize-button" target="_blank" href="/faq/sizes.php">Таблица размеров</a>
@@ -465,11 +448,29 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 		);?>
         <div class="product-info__tab-body" id="product-info">
             <div class="product-info__tab-docs">
-                <? foreach ($arResult['PROPERTIES']['CERF']['VALUE'] as $key => $value) : ?>
-                    <a class="tab-body__doc" target="_blank" href="<?=$value['SRC']?>"><?=$value['DESCRIPTION']?>
+				<? /*foreach ($arResult['PROPERTIES']['CERF']['VALUE'] as $key => $value) : ?>
+          			<a class="tab-body__doc" target="_blank" href="<?=$value['SRC']?>"><?=$value['DESCRIPTION']?> // Mabe docs
                         <span class="tab-body__doc-weight"><?=$value['SIZE']?> кБт</span>
                     </a>
-                <? endforeach; ?>
+				<? endforeach; */?>
+			<!-- -- -->
+            <? if ($arResult['PROPERTIES']['YOUTUBELINK']['VALUE']) : ?>
+            <div class="product-info__tab-videos">
+                <div class="tab-videos fotorama" data-nav="thumbs" data-thumbwidth="145" data-thumbheight="78" data-fit="cover" data-width="100%" data-maxwidth="915px" data-maxheight="459px" data-thumbmargin="10px 10px 0 0" data-thumbborderwidth="0" data-ratio="800/600">
+                    <a href="https://www.youtube.com/watch?v=<?=$arResult['PROPERTIES']['YOUTUBELINK']['VALUE']?>"></a>
+                    	<? if ($arResult['PROPERTIES']['YOUTUBELINK_2']['VALUE']) : ?>
+                    		<a href="https://www.youtube.com/watch?v=<?=$arResult['PROPERTIES']['YOUTUBELINK_2']['VALUE']?>"></a>
+                    	<? endif; ?>
+                    	<? if ($arResult['PROPERTIES']['YOUTUBELINK_3']['VALUE']) : ?>
+                        	<a href="https://www.youtube.com/watch?v=<?=$arResult['PROPERTIES']['YOUTUBELINK_3']['VALUE']?>"></a>
+                    	<? endif; ?>
+                    	<? if ($arResult['PROPERTIES']['YOUTUBELINK_4']['VALUE']) : ?>
+                        	<a href="https://www.youtube.com/watch?v=<?=$arResult['PROPERTIES']['YOUTUBELINK_4']['VALUE']?>"></a>
+                    	<? endif; ?>
+                </div>
+            </div>
+            <? endif; ?>
+			<!-- -- -->
             </div>
         </div>
     </div>
