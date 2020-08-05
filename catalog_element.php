@@ -22,18 +22,18 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
                 foreach($arResult['IMAGES'] as $arPic) :
                     if ($arPic['PIC']['SRC']) : ?>
                 <a class="swiper-slide product-intro__slide">
-<?
-	if (file_exists($_SERVER["DOCUMENT_ROOT"]."/".$arPic['PIC']['SRC']) == 1) {
-	$norm_img = $arPic['PIC']['SRC'];
-	} else {
-	$norm_img = "/local/templates/ohota2020/img/no_photo.png";
-	}
-?>
+					<?
+					if (file_exists($_SERVER["DOCUMENT_ROOT"]."/".$arPic['PIC']['SRC']) == 1) {
+					$norm_img = $arPic['PIC']['SRC'];
+					} else {
+					$norm_img = "/local/templates/ohota2020/img/no_photo.png";
+					}
+					?>
                     <img class="product-intro__slide-img" src="<?=$norm_img?>" alt="slide-<?=$k?>"/>
                 </a>
-                <?  endif;
+                <?endif;
                  $k++;
-                endforeach; ?>
+                endforeach;?>
             </div>
             <div class="product-intro__status">
                 <?foreach($arResult['PROPERTIES']['LABELS']['VALUE_XML_ID'] as $strVal) {
@@ -136,10 +136,25 @@ if ($USER->IsAdmin()) { ?>
         </div>
         <div class="product-intro__buy">
             <div class="product-intro__counter">
-                <? if($arResult['MODIFIER']['MAX'] <= 0) : ?>
+                <? 
+					$pid = $arResult['ID'];
+					$rsStoreProduct = \Bitrix\Catalog\StoreProductTable::getList(array(
+    				'filter' => array('=PRODUCT_ID'=>$pid,'STORE.ACTIVE'=>'Y'),
+					));
+
+					$real_amount = 0;
+					while($arStoreProduct=$rsStoreProduct->fetch())
+					{
+					$real_amount += $arStoreProduct['AMOUNT'];
+	//print_r($arStoreProduct);
+	//echo $arStoreProduct['AMOUNT']." <----";
+					}
+	//echo "---> ".$real_amount;
+					if($real_amount <= 0) : 
+?>
                     <span class="prod-counter__label noaviable">Товар временно недоступен</span>
                 <? else:?>
-				<span class="prod-counter__label">В наличии на складе<span style="display:none;" class="js-counter-limit"><?=$arResult['MODIFIER']['MAX'];?></span></span>
+				<span class="prod-counter__label">В наличии<span style="display:none;" class="js-counter-limit"><?=$arResult['MODIFIER']['MAX'];?></span></span>
                 <? endif; ?>
 
                 <div class="prod-counter__box">
@@ -150,7 +165,8 @@ if ($USER->IsAdmin()) { ?>
 <div class="avi_detail"><span class="avi_info_detail">Для уточнения наличия товара в вашем городе звоните по телефону <a href="tel:tel:88007008256">8 (800) 700 82 56</a></span></div>
 <?
 global $USER;
-if ($USER->IsAdmin()) { ?>
+if ($USER->IsAdmin()) {
+?>
 <div>Количество</div>
 
 <div class="prod-counter__box">
@@ -166,10 +182,10 @@ if ($USER->IsAdmin()) { ?>
 
             </div>
             <div class="product-intro__price">
-			<? if($arResult['MODIFIER']['MAX'] <= 0) : ?>
+			<? if($real_amount <= 0) : ?>
                 <h4 class="product-intro__price-title">Цена последней поставки</h4>
 			<? else:?>
-				<h4 class="product-intro__price-title">Цена</h4>
+				<h4 class="product-intro__price-title">Цена:</h4>
 			<? endif; ?>
 
 <script>
@@ -216,7 +232,7 @@ function add2wish(p_id, pp_id, p, name, dpu, th){
 				>
 
 <?
-if ($arResult['MODIFIER']['MAX'] <= 0) {
+if ($real_amount <= 0) {
 if (!empty($arResult['MODIFIER']['PRICE']) && empty($arResult['MODIFIER']['SPECIAL_PRICE'])) {
 $current_price = $arResult['MODIFIER']['PRICE'];
 } elseif (!empty($arResult['MODIFIER']['SPECIAL_PRICE'])) {
@@ -226,7 +242,7 @@ if(!empty($arResult['MODIFIER']['OLD_PRICE']))
 $old_price = $arResult['MODIFIER']['OLD_PRICE'];
 ?>
 
-<?if($arResult['MODIFIER']['MAX'] <= 0):?>
+<? if($real_amount <= 0) : ?>
 <button type="button" class="product-intro__btn-add mybuttonlol show_me_order_form" id="<?=$arResult['ID'];?>"
 data-url="<?=$arResult['DETAIL_PAGE_URL'];?>"
 data-id="<?=$arResult['ID']?>"
@@ -250,7 +266,7 @@ data-name="<?=$arResult['NAME'];?>"
 // /12dev/new_click/index.php
 ?>
 
-				<? if($arResult['MODIFIER']['MAX'] <= 0) : ?>
+				<? if($real_amount <= 0) : ?>
 <button class="product-intro__btn-add product-intro__btn-add--click" disabled="disabled">Купить в 1 клик</button>
 <?else:?>
 <button class="product-intro__btn-add product-intro__btn-add--click" onclick="openForm()">Купить в 1 клик</button>
@@ -376,7 +392,7 @@ if ($arResult['PROPERTIES']) :?>
         </div>
 
 <?endif;?>
-<?if($arResult['MODIFIER']['MAX'] > 0):?>
+<? if($real_amount <= 0) : ?>
         <div class="product-info__tab" id="availability-name">
             <h3 class="product-info__tab-name" style="cursor:pointer;">Наличие в магазинах</h3>
         </div>
