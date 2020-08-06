@@ -155,7 +155,9 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 					?>
                     	<span class="prod-counter__label noaviable">Товар временно недоступен</span>
                 	<?else:?>
-						<span class="prod-counter__label">В наличии<span style="display:none;" class="js-counter-limit"><?=$arResult['MODIFIER']['MAX'];?></span></span>
+					<div class="product-intro__features">
+						<span class="prod-counter__label">В наличии <a class="real-stock-link" href="#availability">в магазинах</a></span>
+					</div>
                 	<?endif;?>
 
                 	<div class="prod-counter__box">
