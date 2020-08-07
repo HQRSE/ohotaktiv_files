@@ -147,24 +147,27 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 					while($arStoreProduct=$rsStoreProduct->fetch())
 					{
 					$real_amount += $arStoreProduct['AMOUNT'];
-					//print_r($arStoreProduct);
-					//echo $arStoreProduct['AMOUNT']." <----";
-					}
-					//echo "---> ".$real_amount;
-					if($real_amount <= 0) : 
-					?>
-                    	<span class="prod-counter__label noaviable">Товар временно недоступен</span>
-                	<?else:?>
-					<div class="product-intro__features">
-						<span class="prod-counter__label">В наличии <a class="real-stock-link" href="#availability">в магазинах</a></span>
+					}?>
+					<div class="real_aviable_info">
+						<h3>Наличие</h3>
+						<?if($real_amount <= 0 && $arResult['MODIFIER']['MAX'] <= 0) {?>
+                    		<span class="prod-counter__label noaviable">Товар временно недоступен</span>
+						<?} elseif ($real_amount > 0) {?>
+							<div class="product-intro__features">
+							<span class="prod-counter__label">В наличии <a class="real-stock-link" href="#availability">в магазинах</a></span>
+							</div>
+						<?} if ($arResult['MODIFIER']['MAX'] > 0) {?>
+							<div class="product-intro__features">
+								<span class="prod-counter__label">В наличии на складе</span>
+							</div>
+						<?}?>
 					</div>
-                	<?endif;?>
-
-                	<div class="prod-counter__box">
-                    	<div class="prod-counter-less-btn js-counter-less-btn"></div>
-                    		<span class="prod-counter-value js-counter-value">1</span>
-                    	<div class="prod-counter-more-btn js-counter-more-btn"></div>
-               </div>
+				<div class="prod-counter__box">
+					<div class="prod-counter-less-btn js-counter-minus-btn"></div>
+						<input type="number" min="1" step="1" max="9999" class="amount-basket js-amount-value" value="1"></input>
+						<!--  <span class="amount-basket js-amount-value">1</span> -->
+						<div class="prod-counter-more-btn js-counter-plus-btn"></div>
+				</div>
 				<div class="avi_detail">
 					<span class="avi_info_detail">Для уточнения наличия товара в вашем городе звоните по телефону <a href="tel:tel:88007008256">8 (800) 700 82 56</a></span>
 				</div>
@@ -172,15 +175,13 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 				global $USER;
 				if ($USER->IsAdmin()) {
 				?>
-				<div>Количество</div>
-
+<!--
 				<div class="prod-counter__box">
-					<div class="prod-counter-less-btn js-counter-minus-btn"></div>
+					<a href="javascript:void(0)" onclick="BX('<?echo $arParams["PRODUCT_QUANTITY_VARIABLE"]?>').value--;" class="prod-counter-less-btn js-counter-minus-btn"></a>
 						<input type="number" min="1" step="1" max="9999" class="amount-basket js-amount-value" value="1"></input>
-						<!--  <span class="amount-basket js-amount-value">1</span> -->
-						<div class="prod-counter-more-btn js-counter-plus-btn"></div>
+					<a href="javascript:void(0)" onclick="BX('<?echo $arParams["PRODUCT_QUANTITY_VARIABLE"]?>').value++;" class="prod-counter-more-btn js-counter-plus-btn"></a>
 				</div>
-				<span class="result-test">1</span>
+-->
 				<? } ?>
             </div>
             <div class="product-intro__price">
@@ -232,7 +233,6 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 				>
 
 				<?
-				if ($real_amount <= 0) {
 					if (!empty($arResult['MODIFIER']['PRICE']) && empty($arResult['MODIFIER']['SPECIAL_PRICE'])) {
 						$current_price = $arResult['MODIFIER']['PRICE'];
 					} elseif (!empty($arResult['MODIFIER']['SPECIAL_PRICE'])) {
@@ -242,7 +242,7 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 						$old_price = $arResult['MODIFIER']['OLD_PRICE'];
 				?>
 
-					<?if($real_amount <= 0):?>
+				<?if($real_amount <= 0 && $arResult['MODIFIER']['MAX'] <= 0) {?>
 						<button type="button" class="product-intro__btn-add mybuttonlol show_me_order_form" id="<?=$arResult['ID'];?>"
 						data-url="<?=$arResult['DETAIL_PAGE_URL'];?>"
 						data-id="<?=$arResult['ID']?>"
@@ -250,14 +250,23 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 						data-old-price="<?=$old_price?>"
 						data-name="<?=$arResult['NAME'];?>"
 						>
-						Заказать
+							Заказать
 						</button>
-					<?endif;?>
+						<?} elseif ($arResult['MODIFIER']['MAX'] > 0) {?>
+						<button name="<?echo $arParams["ACTION_VARIABLE"]."ADD2BASKET"?>" class="product-intro__btn-add js-btn-add-basket card-prod__add mybuttonlol" id="<?=$arResult['ID'];?>" data-url="<?=$arResult['DETAIL_PAGE_URL'];?>" onclick="ym(42989679,'reachGoal','basket');">
+							В корзину
+						</button>
 				<?
-				} else { ?>
-					<button class="product-intro__btn-add js-btn-add-basket card-prod__add mybuttonlol" id="<?=$arResult['ID'];?>" data-url="<?=$arResult['DETAIL_PAGE_URL'];?>" onclick="ym(42989679,'reachGoal','basket');">
-						В корзину
-					</button>
+				} elseif ($real_amount > 0) { ?>
+						<button type="button" class="product-intro__btn-add mybuttonlol show_me_order_form" id="<?=$arResult['ID'];?>"
+						data-url="<?=$arResult['DETAIL_PAGE_URL'];?>"
+						data-id="<?=$arResult['ID']?>"
+						data-current-price="<?=$current_price?>"
+						data-old-price="<?=$old_price?>"
+						data-name="<?=$arResult['NAME'];?>"
+						>
+							Заказать
+						</button>
 				<? } ?>
 				</a>
 				<!-- end buttons buy/order -->
