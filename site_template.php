@@ -9,19 +9,19 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
   $DIR = explode('?', $_SERVER['REQUEST_URI']);
   if($_SERVER['QUERY_STRING']=='')
   {
-    header("HTTP/1.1 301 Moved Permanently");
+    header("HTTP/1.1 301 Moved Permanently"); 
     header("Location: https://".$_SERVER['HTTP_HOST'].$DIR[0]);
   }
 
   if(preg_match('/^\?+/', $_SERVER['QUERY_STRING']) && preg_match('/[A-Z, a-z, 0-9]/', $_SERVER['QUERY_STRING']))
   {
     $QUERY_STRING = str_replace('?', '', $_SERVER['QUERY_STRING']);
-    header("HTTP/1.1 301 Moved Permanently");
+    header("HTTP/1.1 301 Moved Permanently"); 
     header("Location: https://".$_SERVER['HTTP_HOST'].$DIR[0].'?'.$QUERY_STRING);
   }
   elseif(preg_match('/^\?+/', $_SERVER['QUERY_STRING']))
   {
-    header("HTTP/1.1 301 Moved Permanently");
+    header("HTTP/1.1 301 Moved Permanently"); 
     header("Location: https://".$_SERVER['HTTP_HOST'].$DIR[0]);
   }
 
@@ -41,16 +41,16 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
     <?
     $asset->addCss(SITE_TEMPLATE_PATH . '/css/plugins/swiper.min.css', true);
     $asset->addCss(SITE_TEMPLATE_PATH . '/css/plugins/fotorama.css', true);
-    $asset->addCss(SITE_TEMPLATE_PATH . '/css/styles.css?ver=26', true);
+    $asset->addCss(SITE_TEMPLATE_PATH . '/css/styles.css?ver=29', true);
     $asset->addCss(SITE_TEMPLATE_PATH . '/css/fonts.css', true);
 
 	CJSCore::Init(array('jquery'));
 	$pathToFile = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . SITE_TEMPLATE_PATH;
 	?>
 <!-- pay -->
-  <script src="https://3dsec.sberbank.ru/payment/docsite/assets/js/ipay.js"></script>
+  <script src="https://securepayments.sberbank.ru/payment/docsite/assets/js/ipay.js"></script>
    <script>
-     var ipay = new IPAY({api_token: 'n3s5fovqumvkjcmge8s3b26fho'});
+     var ipay = new IPAY({api_token: '288k2croe49fckbs3mvfgjc9r2'});
    </script>
 <!-- /pay -->
 	<script src="<?=SITE_TEMPLATE_PATH?>/js/plugins/swiper.min.js"></script>
@@ -58,7 +58,16 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
     <script src="<?=SITE_TEMPLATE_PATH?>/js/plugins/jquery.cookie.js"></script>
     <script src="<?=SITE_TEMPLATE_PATH?>/js/plugins/jquery.maskedinput.min.js"></script>
     <script src="<?=SITE_TEMPLATE_PATH?>/js/plugins/jquery.selectric.min.js"></script>
-    <script src="<?=SITE_TEMPLATE_PATH?>/js/main.js?ver=1"></script>
+    <script src="<?=SITE_TEMPLATE_PATH?>/js/main.js?ver=5"></script>
+	<script src="https://use.fontawesome.com/52a1d4bc05.js"></script>
+  <meta name="yandex-verification" content="ff2aef857b70d2b9" />
+
+<meta property="og:url" content="<?='https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']?>"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="<? $APPLICATION->ShowTitle();?>"/>
+<meta property="og:description" content="<? $APPLICATION->ShowProperty("description");?>">
+<?$APPLICATION->AddBufferContent("ogimage");?>
+<?$APPLICATION->ShowViewContent('product_image');;?>
 </head>
 <body>
 <?php $APPLICATION->ShowPanel();?>
@@ -150,38 +159,12 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
  </div>
 
 <header class="header" id="he_hei">
-   <!-- --
+   <!-- -- 
 <div class="attention"><span>На сайте ведутся технические работы. Воспользуйтесь поиском, чтобы найти интересующий товар, либо звоните по телефону</span>&ensp;<a href="tel:88007008256" class="attention__phone">8 (800) 700 82 56</a></div>   -->
     <div class="header-mob">
         <div class="header-mob__inner centering">
             <div class="header__top">
-                <?$APPLICATION->IncludeComponent(
-          "bxmaker:geoip.city",
-          "header__mobile",
-          array(
-              "BTN_EDIT" => "Выберите город",
-              "CACHE_TIME" => "0",
-              "CACHE_TYPE" => "A",
-              "CITY_COUNT" => "30",
-              "CITY_LABEL" => "",
-              "CITY_SHOW" => "Y",
-              "COMPONENT_TEMPLATE" => "header__mobile",
-              "COMPOSITE_FRAME_MODE" => "A",
-              "COMPOSITE_FRAME_TYPE" => "AUTO",
-              "FAVORITE_SHOW" => "Y",
-              "FID" => "1",
-              "INFO_SHOW" => "N",
-              "INFO_TEXT" => "",
-              "INPUT_LABEL" => "Найдите свой город",
-              "MSG_EMPTY_RESULT" => "Ничего не найдено",
-              "POPUP_LABEL" => "Выбрать город",
-              "QUESTION_SHOW" => "Y",
-              "QUESTION_TEXT" => "Ваш город<br/>#CITY#?",
-              "RELOAD_PAGE" => "N",
-              "SEARCH_SHOW" => "Y"
-          ),
-          false
-      );?>
+				<?/* search */?>
                 <a class="header__phone" href="tel:88007008256">8 (800) 700 82 56</a>
             </div>
             <div class="header__bottom">
@@ -189,138 +172,30 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
                     <span></span>
                 </div>
                 <a class="logo-link js-logo" href="/"></a>
-                <?$APPLICATION->IncludeComponent(
-    "api:search.page",
-    "search__mobile",
-    array(
-        "BUTTON_TEXT" => "",
-        "CONVERT_CURRENCY" => "N",
-        "DISPLAY_BOTTOM_PAGER" => "N",
-        "DISPLAY_TOP_PAGER" => "N",
-        "FILEMAN_ON" => "Y",
-        "IBLOCK_10_ACTIVE" => "Y",
-        "IBLOCK_10_DETAIL_URL" => "https://ohotaktiv.ru/catalog/#SECTION_CODE#/#ELEMENT_ID#",
-        "IBLOCK_10_EXCLUDE" => array(
-            0 => "KLYUCHEVYE_SLOVA_1",
-        ),
-        "IBLOCK_10_FIELD" => array(
-            0 => "NAME",
-            1 => "TAGS",
-            2 => "PREVIEW_TEXT",
-            3 => "DETAIL_TEXT",
-        ),
-        "IBLOCK_10_PROPERTY" => array(
-            0 => "SEO_NAIMENOVANIE",
-            1 => "KLYUCHEVYE_SLOVA_1",
-            2 => "CML2_ARTICLE",
-            3 => "CML2_ATTRIBUTES",
-        ),
-        "IBLOCK_10_REGEX" => "",
-        "IBLOCK_10_SECTION" => array(
-            0 => "",
-            1 => "",
-        ),
-        "IBLOCK_10_SECTION_URL" => "https://ohotaktiv.ru/catalog/#SECTION_CODE#",
-        "IBLOCK_10_SHOW_BRAND" => "BRAND",
-        "IBLOCK_10_SHOW_FIELD" => array(
-            0 => "PREVIEW_TEXT",
-        ),
-        "IBLOCK_10_SHOW_PROPERTY" => array(
-        ),
-        "IBLOCK_10_SHOW_SECTION" => "N",
-        "IBLOCK_10_TITLE" => "Основной каталог товаров",
-        "IBLOCK_14_ACTIVE" => "Y",
-        "IBLOCK_14_DETAIL_URL" => "https://ohotaktiv.ru/sale/#SECTION_CODE#/#ELEMENT_ID#",
-        "IBLOCK_14_EXCLUDE" => "",
-        "IBLOCK_14_FIELD" => array(
-            0 => "NAME",
-        ),
-        "IBLOCK_14_PROPERTY" => "",
-        "IBLOCK_14_REGEX" => "",
-        "IBLOCK_14_SECTION_URL" => "https://ohotaktiv.ru/sale/#SECTION_CODE#",
-        "IBLOCK_14_SHOW_BRAND" => "ITEMS",
-        "IBLOCK_14_SHOW_FIELD" => array(
-            0 => "PREVIEW_TEXT",
-        ),
-        "IBLOCK_14_SHOW_PROPERTY" => "",
-        "IBLOCK_14_SHOW_SECTION" => "N",
-        "IBLOCK_14_TITLE" => "Акции",
-        "IBLOCK_25_ACTIVE" => "Y",
-        "IBLOCK_25_DETAIL_URL" => "https://ohotaktiv.ru/#SECTION_CODE#/#ELEMENT_ID#",
-        "IBLOCK_25_FIELD" => array(
-            0 => "PREVIEW_TEXT",
-        ),
-        "IBLOCK_25_REGEX" => "",
-        "IBLOCK_25_SECTION_URL" => "https://ohotaktiv.ru/#SECTION_CODE#",
-        "IBLOCK_25_SHOW_FIELD" => array(
-            0 => "PREVIEW_TEXT",
-        ),
-        "IBLOCK_25_SHOW_SECTION" => "N",
-        "IBLOCK_25_TITLE" => "Новости",
-        "IBLOCK_3_ACTIVE" => "Y",
-        "IBLOCK_3_DETAIL_URL" => "https://ohotaktiv.ru/news/#SECTION_CODE#/#ELEMENT_CODE#",
-        "IBLOCK_3_EXCLUDE" => "",
-        "IBLOCK_3_FIELD" => array(
-            0 => "NAME",
-            1 => "TAGS",
-            2 => "PREVIEW_TEXT",
-            3 => "DETAIL_TEXT",
-        ),
-        "IBLOCK_3_PROPERTY" => "",
-        "IBLOCK_3_REGEX" => "",
-        "IBLOCK_3_SECTION_URL" => "https://ohotaktiv.ru/news/#SECTION_CODE#",
-        "IBLOCK_3_SHOW_FIELD" => array(
-            0 => "PREVIEW_TEXT",
-        ),
-        "IBLOCK_3_SHOW_PROPERTY" => "",
-        "IBLOCK_3_SHOW_SECTION" => "N",
-        "IBLOCK_3_TITLE" => "Новости и статьи",
-        "IBLOCK_ID" => array(
-            0 => "10",
-        ),
-        "IBLOCK_TYPE" => array(
-            0 => "1c_catalog",
-        ),
-        "INCLUDE_CSS" => "N",
-        "INCLUDE_JQUERY" => "N",
-        "INPUT_PLACEHOLDER" => "Поиск по сайту",
-        "ITEMS_LIMIT" => "4",
-        "KEYBOARD_ON" => "Y",
-        "MORE_BUTTON_CLASS" => "api-button",
-        "MORE_BUTTON_TEXT" => "",
-        "PAGER_DESC_NUMBERING" => "Y",
-        "PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
-        "PAGER_SHOW_ALL" => "Y",
-        "PAGER_SHOW_ALWAYS" => "N",
-        "PAGER_TEMPLATE" => ".default",
-        "PAGER_TITLE" => "Результаты поиска",
-        "PICTURE" => array(
-            0 => "PREVIEW_PICTURE",
-        ),
-        "PRICE_CODE" => array(
-            0 => "Сайт (Цена базовая)",
-        ),
-        "PRICE_EXT" => "Y",
-        "PRICE_VAT_INCLUDE" => "Y",
-        "RESIZE_PICTURE" => "64x64",
-        "RESULT_LIMIT" => "4",
-        "RESULT_NOT_FOUND" => "По вашему запросу ничего не найдено...",
-        "SEARCH_MODE" => "JOIN",
-        "SORT_BY1" => "HAS_PREVIEW_PICTURE",
-        "SORT_BY2" => "",
-        "SORT_BY3" => "",
-        "SORT_ORDER1" => "DESC",
-        "SORT_ORDER2" => "DESC",
-        "SORT_ORDER3" => "ASC",
-        "THEME" => "block",
-        "TRUNCATE_LENGTH" => "50",
-        "USE_CURRENCY_SYMBOL" => "N",
-        "USE_TITLE_RANK" => "Y",
-        "COMPONENT_TEMPLATE" => "search__mobile"
-    ),
-    false
-);
-?>
+<!-- --- -->
+<div class="search js-search" id="qwe">
+	<img class="btn-search js-btn-search" src="<?=SITE_TEMPLATE_PATH;?>/img/search-icon.svg" width="20" height="20" />
+	<form action="/search/" autocomplete="off" class="search__form" method="POST">
+		<div class="api-search-fields">
+			<div class="api-query">
+				<input 
+					class="api-search-input-mobile speech-input search__field js-search__field" 
+					id="page-search-text"
+					placeholder="Поиск по сайту"
+					name="q"
+					maxlength="300"
+					value="<?=htmlspecialcharsEx($_POST['q']);?>"
+					type="text"
+				/>
+				<span class="api-ajax-icon"></span>
+				<span class="api-clear-icon klaz"></span>
+			</div>
+		</div>
+		<input type="submit" class="btn-search" value="">
+	</form>
+	<div class="btn-close btn-close--search js-btn-close--search"></div>
+</div>
+<!-- --- -->
             </div>
             <div class="nav-bar js-nav-bar">
                 <div class="nav-bar__body js-nav-bar__body">
@@ -439,138 +314,38 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
                         </svg>
                         <span class="header-desk__menu-item-name">Каталог товаров</span>
                     </a>
-					<?$APPLICATION->IncludeComponent(
-    "api:search.page",
-    "search__desktop",
-    array(
-        "BUTTON_TEXT" => "",
-        "CONVERT_CURRENCY" => "N",
-        "DISPLAY_BOTTOM_PAGER" => "N",
-        "DISPLAY_TOP_PAGER" => "N",
-        "FILEMAN_ON" => "Y",
-        "IBLOCK_10_ACTIVE" => "Y",
-        "IBLOCK_10_DETAIL_URL" => "https://ohotaktiv.ru/catalog/#SECTION_CODE#/#ELEMENT_ID#",
-        "IBLOCK_10_EXCLUDE" => array(
-            0 => "KLYUCHEVYE_SLOVA_1",
-        ),
-        "IBLOCK_10_FIELD" => array(
-            0 => "NAME",
-            1 => "TAGS",
-            2 => "PREVIEW_TEXT",
-            3 => "DETAIL_TEXT",
-        ),
-        "IBLOCK_10_PROPERTY" => array(
-            0 => "SEO_NAIMENOVANIE",
-            1 => "KLYUCHEVYE_SLOVA_1",
-            2 => "CML2_ARTICLE",
-            3 => "CML2_ATTRIBUTES",
-        ),
-        "IBLOCK_10_REGEX" => "",
-        "IBLOCK_10_SECTION" => array(
-            0 => "",
-            1 => "",
-        ),
-        "IBLOCK_10_SECTION_URL" => "https://ohotaktiv.ru/catalog/#SECTION_CODE#",
-        "IBLOCK_10_SHOW_BRAND" => "BRAND",
-        "IBLOCK_10_SHOW_FIELD" => array(
-            0 => "PREVIEW_TEXT",
-        ),
-        "IBLOCK_10_SHOW_PROPERTY" => array(
-        ),
-        "IBLOCK_10_SHOW_SECTION" => "N",
-        "IBLOCK_10_TITLE" => "Основной каталог товаров",
-        "IBLOCK_14_ACTIVE" => "Y",
-        "IBLOCK_14_DETAIL_URL" => "https://ohotaktiv.ru/sale/#SECTION_CODE#/#ELEMENT_ID#",
-        "IBLOCK_14_EXCLUDE" => "",
-        "IBLOCK_14_FIELD" => array(
-            0 => "NAME",
-        ),
-        "IBLOCK_14_PROPERTY" => "",
-        "IBLOCK_14_REGEX" => "",
-        "IBLOCK_14_SECTION_URL" => "https://ohotaktiv.ru/sale/#SECTION_CODE#",
-        "IBLOCK_14_SHOW_BRAND" => "ITEMS",
-        "IBLOCK_14_SHOW_FIELD" => array(
-            0 => "PREVIEW_TEXT",
-        ),
-        "IBLOCK_14_SHOW_PROPERTY" => "",
-        "IBLOCK_14_SHOW_SECTION" => "N",
-        "IBLOCK_14_TITLE" => "Акции",
-        "IBLOCK_25_ACTIVE" => "Y",
-        "IBLOCK_25_DETAIL_URL" => "https://ohotaktiv.ru/#SECTION_CODE#/#ELEMENT_ID#",
-        "IBLOCK_25_FIELD" => array(
-            0 => "PREVIEW_TEXT",
-        ),
-        "IBLOCK_25_REGEX" => "",
-        "IBLOCK_25_SECTION_URL" => "https://ohotaktiv.ru/#SECTION_CODE#",
-        "IBLOCK_25_SHOW_FIELD" => array(
-            0 => "PREVIEW_TEXT",
-        ),
-        "IBLOCK_25_SHOW_SECTION" => "N",
-        "IBLOCK_25_TITLE" => "Новости",
-        "IBLOCK_3_ACTIVE" => "Y",
-        "IBLOCK_3_DETAIL_URL" => "https://ohotaktiv.ru/news/#SECTION_CODE#/#ELEMENT_CODE#",
-        "IBLOCK_3_EXCLUDE" => "",
-        "IBLOCK_3_FIELD" => array(
-            0 => "NAME",
-            1 => "TAGS",
-            2 => "PREVIEW_TEXT",
-            3 => "DETAIL_TEXT",
-        ),
-        "IBLOCK_3_PROPERTY" => "",
-        "IBLOCK_3_REGEX" => "",
-        "IBLOCK_3_SECTION_URL" => "https://ohotaktiv.ru/news/#SECTION_CODE#",
-        "IBLOCK_3_SHOW_FIELD" => array(
-            0 => "PREVIEW_TEXT",
-        ),
-        "IBLOCK_3_SHOW_PROPERTY" => "",
-        "IBLOCK_3_SHOW_SECTION" => "N",
-        "IBLOCK_3_TITLE" => "Новости и статьи",
-        "IBLOCK_ID" => array(
-            0 => "10",
-        ),
-        "IBLOCK_TYPE" => array(
-            0 => "1c_catalog",
-        ),
-        "INCLUDE_CSS" => "N",
-        "INCLUDE_JQUERY" => "N",
-        "INPUT_PLACEHOLDER" => "Поиск по сайту",
-        "ITEMS_LIMIT" => "4",
-        "KEYBOARD_ON" => "Y",
-        "MORE_BUTTON_CLASS" => "api-button",
-        "MORE_BUTTON_TEXT" => "",
-        "PAGER_DESC_NUMBERING" => "Y",
-        "PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
-        "PAGER_SHOW_ALL" => "Y",
-        "PAGER_SHOW_ALWAYS" => "N",
-        "PAGER_TEMPLATE" => ".default",
-        "PAGER_TITLE" => "Результаты поиска",
-        "PICTURE" => array(
-            0 => "PREVIEW_PICTURE",
-        ),
-        "PRICE_CODE" => array(
-            0 => "Сайт (Цена базовая)",
-        ),
-        "PRICE_EXT" => "Y",
-        "PRICE_VAT_INCLUDE" => "Y",
-        "RESIZE_PICTURE" => "64x64",
-        "RESULT_LIMIT" => "4",
-        "RESULT_NOT_FOUND" => "По вашему запросу ничего не найдено...",
-        "SEARCH_MODE" => "JOIN",
-        "SORT_BY1" => "HAS_PREVIEW_PICTURE",
-        "SORT_BY2" => "",
-        "SORT_BY3" => "",
-        "SORT_ORDER1" => "DESC",
-        "SORT_ORDER2" => "DESC",
-        "SORT_ORDER3" => "ASC",
-        "THEME" => "block",
-        "TRUNCATE_LENGTH" => "50",
-        "USE_CURRENCY_SYMBOL" => "N",
-        "USE_TITLE_RANK" => "Y",
-        "COMPONENT_TEMPLATE" => "search__desktop"
-    ),
-    false
-);
-?>
+		<?$APPLICATION->IncludeComponent("arturgolubev:search.title", "real_search", Array(
+					"CATEGORY_0" => array(	// Ограничение области поиска
+					0 => "iblock_1c_catalog",
+					),
+					"CATEGORY_0_TITLE" => "",	// Название категории
+					"CATEGORY_0_iblock_1c_catalog" => array(	// Искать в информационных блоках типа "iblock_1c_catalog"
+					0 => "10",
+					),
+					"CHECK_DATES" => "Y",	// Искать только в активных по дате документах
+					"CONTAINER_ID" => "smart-title-search",	// ID контейнера, по ширине которого будут выводиться результаты
+					"CONVERT_CURRENCY" => "N",	// Показывать цены в одной валюте
+					"FILTER_NAME" => "",	// Дополнительный фильтр
+		"INPUT_ID" => "smart-title-search-input",	// ID строки ввода поискового запроса
+		"NUM_CATEGORIES" => "1",	// Количество категорий поиска (Использование более одной категории замедлит работу компонента, рекомендуемое значение - 1)
+		"ORDER" => "rank",	// Сортировка результатов
+		"PAGE" => "#SITE_DIR#search/",	// Страница выдачи результатов поиска (доступен макрос #SITE_DIR#)
+		"PREVIEW_HEIGHT" => "75",	// Высота картинки
+		"PREVIEW_TRUNCATE_LEN" => "",	// Максимальная длина анонса для вывода
+		"PREVIEW_WIDTH" => "75",	// Ширина картинки
+		"PRICE_CODE" => array(	// Тип цены
+			0 => "Диапазон цен",
+			1 => "Сайт (Цена базовая)",
+		),
+		"PRICE_VAT_INCLUDE" => "Y",	// Включать НДС в цену
+		"SHOW_INPUT" => "Y",	// Показывать форму ввода поискового запроса
+		"SHOW_PREVIEW" => "Y",	// Показать картинку
+		"SHOW_PREVIEW_TEXT" => "Y",	// Показывать в результатах текст анонса
+		"TOP_COUNT" => "5",	// Количество результатов в категории
+		"USE_LANGUAGE_GUESS" => "Y",	// Включить автоопределение раскладки клавиатуры
+	),
+	false
+);?>
                     <a class="header-desk__menu-item" href="/personal/favorite/">
                         <svg class="header-desk__menu-icon header-desk__menu-icon--fav">
                             <use xlink:href="#icon-fav"></use>
@@ -624,13 +399,13 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
                             "ROOT_MENU_TYPE" => "left",
                             "MAX_LEVEL" => "3",
                             "CHILD_MENU_TYPE" => "fck-menu",
-                            "USE_EXT" => "Y",
+                            "USE_EXT" => "Y", 
                             "DELAY" => "N",
                             "ALLOW_MULTI_SELECT" => "N",
                             "MENU_CACHE_TYPE" => "A",
                             "MENU_CACHE_TIME" => "3600",
                             "MENU_CACHE_USE_GROUPS" => "Y",
-                            "MENU_CACHE_GET_VARS" => "",
+                            "MENU_CACHE_GET_VARS" => "",  
                             "COMPONENT_TEMPLATE" => "",
                             "COMPOSITE_FRAME_MODE" => "A",
                             "COMPOSITE_FRAME_TYPE" => "AUTO",
@@ -833,10 +608,11 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
 		</div>
 		<div class="footer__copy">
 			<div class="footer__own">© 2015 — <?=date('Y');?> ОхотАктив.
-<span>Данный сайт носит исключительно информационный характер и ни при каких условиях не является договором публичной оферты.<br>Для уточнения информации о наличии, стоимости товаров и (или) услуг, а так же иной информации, пожалуйста, обращайтесь к менеджерам клиентского обслуживания.</span>
+<span>Данный сайт носит исключительно информационный характер и ни при каких условиях не является договором публичной оферты.<br>Для уточнения информации о наличии, стоимости товаров и (или) услуг, а так же иной информации, пожалуйста, обращайтесь к менеджерам клиентского обслуживания.</span> 
 			</div>
-
+			
 		</div>
+	</div>
     </footer>
     <div class="callback">
         <div class="callback__body">
@@ -881,13 +657,13 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
 		"REGISTER_URL" => SITE_DIR."/auth/reg.php",
 		"SHOW_ERRORS" => "Y"
 	)
-);?>
+);?> 
 
 <!-- not aviable Order form -->
 <div class="custom_order_form">
 <div class="form_order_order">
 <div class="order_close btn-close"></div>
-<h3>Заказ отсутствующего товара</h3>
+<h3>Заказ товара</h3>
 	<div class="order_thy"></div>
 	<div class="order_info">
 	<form action="/12dev/email_send/email_send.php" method="post" class="form_form_order">
@@ -946,8 +722,8 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
 
 	<?if ($APPLICATION->GetCurPage(true) !== '/index.php'):?>
 	    <script>document.querySelector("body .header").style.position = "fixed";</script>
-	<?endif;?>
-
+	<?endif;?>   
+	
 	<?if (!isset($_GET['no_metrics'])):?>
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-92403222-1"></script>
@@ -963,7 +739,7 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
 			(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
 			m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
 			(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
+			
 			ym(42989679, "init", {
 					clickmap:true,
 					trackLinks:true,
@@ -986,12 +762,25 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
 				s.src = 'https://admin.verbox.ru/support/support.js?h='+id;
 				var sc = d.getElementsByTagName('script')[0];
 				w[m] = w[m] || function() { (w[m].q = w[m].q || []).push(arguments); };
-				if (sc) sc.parentNode.insertBefore(s, sc);
+				if (sc) sc.parentNode.insertBefore(s, sc); 
 				else d.documentElement.firstChild.appendChild(s);
 			})(document, window, 'Verbox');
 		</script>
 		<!-- {/literal} End Verbox -->
 	<?endif;?>
 
+<?
+function ogimage() {
+    global $APPLICATION;
+    ob_start();
+
+    if(!strlen($APPLICATION->GetProperty('isproduct')) > 0) {
+        echo '<meta property="og:image" content="https://'.$_SERVER['HTTP_HOST'].'/local/templates/ohota2020/img/logo-desc.svg"/>';
+    }
+    $result = ob_get_contents();
+    ob_end_clean();
+    return $result;
+}
+?>
 </body>
 </html>
