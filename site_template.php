@@ -41,7 +41,7 @@ if(preg_match('/\?/', $_SERVER['REQUEST_URI']))
     <?
     $asset->addCss(SITE_TEMPLATE_PATH . '/css/plugins/swiper.min.css', true);
     $asset->addCss(SITE_TEMPLATE_PATH . '/css/plugins/fotorama.css', true);
-    $asset->addCss(SITE_TEMPLATE_PATH . '/css/styles.css?ver=30', true);
+    $asset->addCss(SITE_TEMPLATE_PATH . '/css/styles.css?ver=29', true);
     $asset->addCss(SITE_TEMPLATE_PATH . '/css/fonts.css', true);
 
 	CJSCore::Init(array('jquery'));
