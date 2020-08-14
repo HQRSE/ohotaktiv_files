@@ -1,29 +1,38 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("Title");
+$APPLICATION->SetTitle("Удаление значения множественного свойства типа список у всех товаров");
+/* Удалится бейдж "Новинка" у всех товаров */
+/* Работает попарно с механикой SNOVINKI - snovinki_p1.php */
 ?>
 
 <?
-$iblock_id = 10; // основной инфоблок
-$ELEMENT_ID = 14509;
-
-// перебираем все активные элементы нашего инфоблока
+$iblock_id = 10; // Основной инфоблок
+// Перебираем LABELS
 $resItem = CIBlockElement::GetList(
-	array(), // Order
-	array( "ACTIVE"=>"Y", "IBLOCK_ID"=>$iblock_id, ">PROPERTY_LABELS"=>0), // Filter
+	array(/*"PROPERTY_SNOVINKI"=>"asc"*/), // Order
+	array( "ACTIVE"=>"Y", "IBLOCK_ID"=>$iblock_id, ">PROPERTY_LABELS"=>"0"/*, "ID"=>14509*/), // Filter
 	false, // GroupBy
 	false, // NavStartParams
-	array("ID", "IBLOCK_ID", "PROPERTY_LABELS") // SelectFields
+	array("ID", "PROPERTY_LABELS") // SelectFields
 );
 while($arItem = $resItem->Fetch())
 {
-	if (37235 == $arItem['PROPERTY_LABELS_ENUM_ID']) {
-		//CIBlockElement::SetPropertyValuesEx($ELEMENT_ID, false, array("SNOVINKI" => ""));
-	//}
-
-	echo "id: ".$arItem['ID']." - s: ".$arItem['PROPERTY_LABELS_ENUM_ID']."<br>";
+	$ELEMENT_ID = $arItem['ID'];
+	$VALUES = array();
+	$res = CIBlockElement::GetProperty($iblock_id, $ELEMENT_ID, "sort", "asc", array("CODE" => "LABELS"));
+	while ($ob = $res->GetNext())
+	{
+		$VALUES[] = $ob['VALUE'];
 	}
-	//print_r($arItem);
+	//print_r($VALUES);
+	unset($VALUES[0]); // Убираем из массива значение "Новинка"
+	CIBlockElement::SetPropertyValuesEx( // Сохраняем
+		$ELEMENT_ID,
+		$IBLOCK_ID,
+		array(
+			"LABELS" => $VALUES,
+		)
+	);
 }
 ?>
 
