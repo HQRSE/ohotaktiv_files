@@ -34,6 +34,9 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
                 <?endif;
                  $k++;
                 endforeach;?>
+                <?$this->SetViewTarget('product_image');?>
+                	<meta property="og:image" content="<?='https://'.$_SERVER['HTTP_HOST'].$arResult['IMAGES'][1]["PIC"]["SRC"]?>"/>
+				<?$this->EndViewTarget();?>
             </div>
             <div class="product-intro__status">
                 <?foreach($arResult['PROPERTIES']['LABELS']['VALUE_XML_ID'] as $strVal) {
@@ -69,6 +72,16 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
        		<div class="product-intro__status-sale">Спеццена</div>
    			</div>
 			<? } ?>
+<?
+/* **************************************** */
+global $USER;
+if ($USER->IsAdmin()) {
+	//print_r($arResult['MORE_PHOTO']);
+echo "------------------>";
+	//print_r($arResult['IMAGES']);
+}
+/* **************************************** */
+?>
 
             <div class="product-intro__actions">
                 <div class="product-intro__actions-fav js-fav-prod" data-tooltip="Добавить в избранное" data-id="<?=$arResult['ID'];?>"></div>
@@ -137,7 +150,7 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
         </div>
         <div class="product-intro__buy">
             <div class="product-intro__counter">
-                	<? 
+                	<?
 					$pid = $arResult['ID'];
 					$rsStoreProduct = \Bitrix\Catalog\StoreProductTable::getList(array(
     				'filter' => array('=PRODUCT_ID'=>$pid,'STORE.ACTIVE'=>'Y'),
@@ -156,9 +169,15 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 							<div class="product-intro__features">
 							<span class="prod-counter__label">В наличии <a class="real-stock-link" href="#availability">в магазинах</a></span>
 							</div>
-						<?} if ($arResult['MODIFIER']['MAX'] > 0) {?>
+						<?} if ($arResult['MODIFIER']['MAX'] > 0) {
+						if ($arResult['MODIFIER']['MAX'] > 0 && $arResult['MODIFIER']['MAX'] < 10) {$count_class = 'malo';$count_value = 30;}
+						if ($arResult['MODIFIER']['MAX'] > 10 && $arResult['MODIFIER']['MAX'] < 70) {$count_class = 'sredny';$count_value = 65;}
+						if ($arResult['MODIFIER']['MAX'] > 70) {$count_class = 'mnogo';$count_value = 99;}
+						?>
 							<div class="product-intro__features">
-								<span class="prod-counter__label">В наличии на складе</span>
+								<span class="prod-counter__label">В наличии на складе <span class="count_avi"><?=$count?></span><?if ($USER->IsAdmin()) {?>
+
+<?}?></span><progress id="progressbar" value="<?=$count_value?>" max="100" class="<?=$count_class?>"></progress>
 							</div>
 						<?}?>
 					</div>
@@ -243,7 +262,7 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 				?>
 
 				<?if($real_amount <= 0 && $arResult['MODIFIER']['MAX'] <= 0) {?>
-						<button type="button" class="product-intro__btn-add mybuttonlol show_me_order_form" id="<?=$arResult['ID'];?>"
+						<button type="button" class="product-intro__btn-add mybuttonlol_cart show_me_order_form" id="<?=$arResult['ID'];?>"
 						data-url="<?=$arResult['DETAIL_PAGE_URL'];?>"
 						data-id="<?=$arResult['ID']?>"
 						data-current-price="<?=$current_price?>"
@@ -252,26 +271,17 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 						>
 							Заказать
 						</button>
-						<?} elseif ($arResult['MODIFIER']['MAX'] > 0) {?>
-						<button name="<?echo $arParams["ACTION_VARIABLE"]."ADD2BASKET"?>" class="product-intro__btn-add js-btn-add-basket card-prod__add mybuttonlol" id="<?=$arResult['ID'];?>" data-url="<?=$arResult['DETAIL_PAGE_URL'];?>" onclick="ym(42989679,'reachGoal','basket');">
+						<?} else {?>
+						<button name="<?echo $arParams["ACTION_VARIABLE"]."ADD2BASKET"?>" class="product-intro__btn-add js-btn-add-basket card-prod__add mybuttonlol real_order" id="<?=$arResult['ID'];?>" data-url="<?=$arResult['DETAIL_PAGE_URL'];?>" onclick="ym(42989679,'reachGoal','basket');">
 							В корзину
 						</button>
 				<?
-				} elseif ($real_amount > 0) { ?>
-						<button type="button" class="product-intro__btn-add mybuttonlol show_me_order_form" id="<?=$arResult['ID'];?>"
-						data-url="<?=$arResult['DETAIL_PAGE_URL'];?>"
-						data-id="<?=$arResult['ID']?>"
-						data-current-price="<?=$current_price?>"
-						data-old-price="<?=$old_price?>"
-						data-name="<?=$arResult['NAME'];?>"
-						>
-							Заказать
-						</button>
-				<? } ?>
+				}
+				?>
 				</a>
 				<!-- end buttons buy/order -->
 
-				<? if($real_amount <= 0) : ?>
+				<? if($real_amount <= 0 && $arResult['MODIFIER']['MAX'] <= 0) : ?>
 					<button class="product-intro__btn-add product-intro__btn-add--click" disabled="disabled">Купить в 1 клик</button>
 				<?else:?>
 					<button class="product-intro__btn-add product-intro__btn-add--click" onclick="openForm()">Купить в 1 клик</button>
@@ -369,9 +379,12 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
             <p class="buy-info__item-desc">Товар обмену и возврату доступен</p>
         </div>
 		<?endif;?>
-        <!--<div class="buy-info__item buy-info__item--gift"><span class="buy-info__item-title">Подарок при 100% предоплате!</span>
-            <p class="buy-info__item-desc">При покупке от 5 000 ₽ </p>
-        </div>-->
+
+            <?if($arResult["SECTION"]["PATH"][0]['ID']==1104):?>
+		<div class="buy-info__item buy-info__item--gift"><span class="buy-info__item-title">Таблица размеров</span>
+            <p class="buy-info__item-desc"><a class="tablesize-button" target="_blank" href="/faq/sizes.php">Смотреть</a></p>
+        </div>
+            <? endif; ?>
     </div>
 
     <? if ($arResult["PROPERTIES"]["PRODAZHAPOLITSENZIIFIZLITSAM"]['VALUE']) : ?>
@@ -381,17 +394,17 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 
 <section class="product-info centering">
     <div class="product-info__tabs">
-	<?if (!empty($arResult['DETAIL_TEXT'])) :?>
-        <div class="product-info__tab">
+		<?/*if (!empty($arResult['DETAIL_TEXT'])) :*/?>
+        <div class="product-info__tab" id="detail_description">
             <h3 class="product-info__tab-name product-info__tab-name--is-active" style="cursor:pointer;">Описание</h3>
         </div>
-	<?endif;?>
-	<? unset($arResult['PROPERTIES'][0]); 
-	if ($arResult['PROPERTIES']) :?>
+		<?/*endif;*/?>
+	<? unset($arResult['PROPERTIES'][0]);
+/*if ($arResult['PROPERTIES']) :*/?>
         <div class="product-info__tab" id="product-info-name">
             <h3 class="product-info__tab-name" style="cursor:pointer;">Характеристики</h3>
         </div>
-		<?endif;?>
+		<?/*endif;*/?>
 		<? if($real_amount > 0) : ?>
         <div class="product-info__tab" id="availability-name">
             <h3 class="product-info__tab-name" style="cursor:pointer;">Наличие в магазинах</h3>
@@ -408,11 +421,30 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
         </div>
 		<?endif;?>
         <div class="product-info__tab-body product-info__tab-body--descr" id="body-visible">
-            <p><?=htmlspecialchars_decode($arResult['DETAIL_TEXT'])?></p>
 
-            <?if($arResult["SECTION"]["PATH"][0]['ID']==1104):?>
-                <a class="dv-tablesize-button" target="_blank" href="/faq/sizes.php">Таблица размеров</a>
-            <? endif; ?>
+<?
+	$html = $arResult['DETAIL_TEXT'];
+	$html = htmlspecialchars_decode($html);
+//$html = preg_replace("/(<p).*?(>)/i", '\\1\\2', $html);
+	$html = preg_replace('#<st yle(.*?)>(.*?)</style>#is', '', $html);
+	$html = str_replace('&nbsp;', '', $html);
+	$html = preg_replace('/<br[^>]*>/', '', $html);
+	$html = preg_replace("/ {2,}/", " ", $html);
+	$html = preg_replace('/<(\w+)(?:([\'"]).*?\2|.)*?>/',"<$1>",$html);
+	echo $html;
+?>
+
+<!-- --- -->
+<?
+global $USER;
+if ($USER->IsAdmin()) {
+	/* *** */
+
+
+	/* *** */
+					  }
+?>
+<!-- --- -->
         </div>
 
         <div class="product-info__tab-body" id="product-info">
@@ -425,17 +457,37 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 					$res = CIBlockSection::GetByID($section_id);
 					if($ar_res = $res->GetNext())
 						$section_code =  $ar_res['CODE'];
+						$section_name = $ar_res['NAME'];
 						$start_value = $prop['DISPLAY_VALUE'];
 						$arParams = array("replace_space"=>"_","replace_other"=>"_");
 						$real_value = Cutil::translit($start_value,"ru",$arParams);
 					?>
+					<?
+						$unset_prop = array('VES','CML2_ARTICLE','DLINA_OBSHCHAYA','KOMPLEKTATSIYA','TIP_STVOLA_1','EMKOST_MAGAZINA','SKOROST_POLETA');
+						$prop_code = $prop['CODE'];
+						if (in_array($prop_code, $unset_prop)) {
+					?>
+							<span class="product-info__tab-record-value no_line"><?=$prop['DISPLAY_VALUE']?></span>
+					<?
+						} else {
+					?>
 					<a href="https://ohotaktiv.ru/catalog/<?=$section_code?>/filter/<?=strtolower($prop["CODE"])?>-is-<?=$real_value?>/apply/">
 						<span class="product-info__tab-record-value"><?=$prop['DISPLAY_VALUE']?></span>
 					</a>
+					<?
+	   					}
+					?>
                 </li>
                 <? endforeach; ?>
+				<li class="product-info__tab-record">
+					<span class="product-info__tab-record-name">Группа</span>
+					<a href="/catalog/<?=$section_code?>" target="_blank">
+						<span class="product-info__tab-record-value"><?=$section_name?></span>
+					</a>
+				</li>
             </ul>
         </div>
+<? if($real_amount > 0) : ?>
 		<?$APPLICATION->IncludeComponent(
 			"bitrix:catalog.store.amount",
 			"element__amount",
@@ -457,7 +509,8 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 			),
 			$component
 		);?>
-        <div class="product-info__tab-body" id="product-info">
+<?endif;?>
+        <div class="product-info__tab-body" id="product-video">
             <div class="product-info__tab-docs">
 				<? /*foreach ($arResult['PROPERTIES']['CERF']['VALUE'] as $key => $value) : ?>
           			<a class="tab-body__doc" target="_blank" href="<?=$value['SRC']?>"><?=$value['DESCRIPTION']?> // Mabe docs
@@ -513,7 +566,7 @@ $strMainID = $this->GetEditAreaId($arResult['ID']);
 	<div class="add-basket__body">
 		<div class="add-basket__top">
 			<p class="no_return__desc">Постановление Правительства РФ от 19.01.1998 N 55 (ред. от 16.05.2020) "Об утверждении Правил продажи отдельных видов товаров, перечня товаров длительного пользования, на которые не распространяется требование покупателя о безвозмездном предоставлении ему на период ремонта или замены аналогичного товара, и перечня непродовольственных товаров надлежащего качества, не подлежащих возврату или обмену на аналогичный товар других размера, формы, габарита, фасона, расцветки или комплектации"</p>
-			<div class="btn-close btn-close--add-basket js-btn-close--popup-no_return">			
+			<div class="btn-close btn-close--add-basket js-btn-close--popup-no_return">
 			</div>
 		</div>
 		<blockquote>Утвержден<br>
