@@ -79,14 +79,6 @@ $APPLICATION->SetPageProperty('keywords', $arResult['VARIABLES']['SECTION']['UF_
 	<section class="category-catalog centering">
 		<sidebar class="category-catalog__sidebar">
 			<?
-/* *** */
-if(empty($arResult["VARIABLES"]["SMART_FILTER_PATH"])){
-$re = '/^\/.*\/filter\/(.*)\/apply\//';
-$str = Bitrix\Main\Context::getCurrent()->getRequest()->getRequestedPage();
-preg_match($re, $str, $matches);
-$arResult["VARIABLES"]["SMART_FILTER_PATH"] =$matches[1];
-}
-/* *** */
 				$APPLICATION->IncludeComponent(
 				"bitrix:catalog.smart.filter",
 				"real_catalog_filter",
