@@ -841,38 +841,31 @@ function sendEmailOnChangeStatusCommission($id) {
     CEvent::SendImmediate("ChangeStatusCommission", "s1", $arFields);
 }
 
-// Обновление свойства IS_AVAILABLE - доступность на складах для сортировки
-AddEventHandler("catalog", "OnBeforeProductAdd", "OnBeforeIBlockElement");
-AddEventHandler("catalog", "OnBeforeProductUpdate", "OnBeforeIBlockElement");
-function OnBeforeIBlockElement($ID, $arFields = false)
+// Обновление свойства IS_AVAILABLE - доступность на складе + магазины для сортировки
+AddEventHandler("iblock", "OnAfterIBlockElementUpdate", "isAvailable");
+AddEventHandler("iblock", "OnAfterIBlockElementAdd", "isAvailable");
+function isAvailable(&$arFields)
 {
-
-if(is_array($ID))
-{
-$arFields = $ID;
-$ELEMENT_ID = $arFields["ID"];                    
-}
-elseif(is_int($ID) && is_array($arFields) && isset($arFields["PROPERTY_IS_AVAILABLE"]))
-{
-$ELEMENT_ID = $ID;                    
-}
-/* *** */                    
-                    $rsStoreProduct = \Bitrix\Catalog\StoreProductTable::getList(array(
-                    'filter' => array('=PRODUCT_ID'=>$ELEMENT_ID,'STORE.ACTIVE'=>'Y'),
-                    ));
-                    $real_amount = 0;
-                    while($arStoreProduct=$rsStoreProduct->fetch())
-                    {
-                    $real_amount += $arStoreProduct['AMOUNT'];
-                    }
-                    if ($real_amount > 0) {
-                    $is_aviable = 1;
-                    } else {
-                    $is_aviable = 0;    
-                    }
-/* *** */
-CIBlockElement::SetPropertyValuesEx($ELEMENT_ID, false, array("IS_AVAILABLE" => $is_aviable));
-
+    CModule::IncludeModule("iblock");
+    CModule::IncludeModule("catalog");
+    CModule::IncludeModule("sale");
+    $pid = $arFields['ID'];
+    $rsStoreProduct = \Bitrix\Catalog\StoreProductTable::getList(array(
+        'filter' => array('=PRODUCT_ID'=>$pid,'STORE.ACTIVE'=>'Y'),
+    ));
+    $real_amount = 0;
+    while($arStoreProduct=$rsStoreProduct->fetch())
+    {
+        $real_amount += $arStoreProduct['AMOUNT'];
+    }
+    if($real_amount <= 0) {
+        $store_available = 0;
+    } else {
+        $store_available = $real_amount;
+    }
+    $ar_res = CCatalogProduct::GetByID($pid);
+    $full_quantity = $ar_res['QUANTITY'] + $store_available;
+    CIBlockElement::SetPropertyValuesEx($arFields['ID'], 10, array('IS_AVAILABLE' => $full_quantity)); // поставил
 }
 
 /* Уведомление когда добавлен комиссионный товар */
