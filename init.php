@@ -900,7 +900,7 @@ class OnAfterReviewAdd {
             $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
             $review_id = $arFields['ID'];
             $message = 'Отзыв: '.$arFields['PREVIEW_TEXT'].'<br>'.'Товар: '.$review_id."<br><a href='https://ohotaktiv.ru/bitrix/admin/iblock_element_edit.php?IBLOCK_ID=12&type=1c_catalog&ID=".$review_id."&lang=ru&find_section_section=-1&WF=Y'>Посмотреть отзыв</a>";
-            mail('suzuneko@bk.ru', 'Добавлен отзыв на товар', $message, $headers);
+            mail('ohotaktiv@list.ru', 'Добавлен отзыв на товар', $message, $headers);
         }
     }
 }
