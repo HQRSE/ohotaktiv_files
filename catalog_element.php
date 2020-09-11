@@ -13,8 +13,7 @@
 $this->setFrameMode(true);
 $arGeoData = $arParams["GEODATA"];
 $strMainID = $this->GetEditAreaId($arResult['ID']);
-?>
-<section class="product-intro centering">
+?><section class="product-intro centering">
     <div class="product-intro__images">
         <div class="swiper-container product-intro__slider js-product-intro__slider">
             <div class="swiper-wrapper">
@@ -416,10 +415,14 @@ echo "------------------>";
 		</div>
 		<?endif;?>
 		<?if(!empty($arResult['PROPERTIES']['CERF']['VALUE'])):?>
-        <div class="product-info__tab">
+        <div class="product-info__tab" id="product-documents-name">
             <h3 class="product-info__tab-name" style="cursor:pointer;">Документы</h3>
         </div>
 		<?endif;?>
+        <div class="product-info__tab" id="product-review-name">
+            <h3 class="product-info__tab-name" style="cursor:pointer;">Отзывы</h3>
+        </div>
+
         <div class="product-info__tab-body product-info__tab-body--descr" id="body-visible">
 
 <?
@@ -434,17 +437,6 @@ echo "------------------>";
 	echo $html;
 ?>
 
-<!-- --- -->
-<?
-global $USER;
-if ($USER->IsAdmin()) {
-	/* *** */
-
-
-	/* *** */
-					  }
-?>
-<!-- --- -->
         </div>
 
         <div class="product-info__tab-body" id="product-info">
@@ -510,6 +502,7 @@ if ($USER->IsAdmin()) {
 			$component
 		);?>
 <?endif;?>
+<? if ($arResult['PROPERTIES']['YOUTUBELINK']['VALUE']) : ?>
         <div class="product-info__tab-body" id="product-video">
             <div class="product-info__tab-docs">
 				<? /*foreach ($arResult['PROPERTIES']['CERF']['VALUE'] as $key => $value) : ?>
@@ -518,7 +511,6 @@ if ($USER->IsAdmin()) {
                     </a>
 				<? endforeach; */?>
 			<!-- -- -->
-            <? if ($arResult['PROPERTIES']['YOUTUBELINK']['VALUE']) : ?>
             <div class="product-info__tab-videos">
                 <div class="tab-videos fotorama" data-nav="thumbs" data-thumbwidth="145" data-thumbheight="78" data-fit="cover" data-width="100%" data-maxwidth="915px" data-maxheight="459px" data-thumbmargin="10px 10px 0 0" data-thumbborderwidth="0" data-ratio="800/600">
                     <a href="https://www.youtube.com/watch?v=<?=$arResult['PROPERTIES']['YOUTUBELINK']['VALUE']?>"></a>
@@ -533,10 +525,82 @@ if ($USER->IsAdmin()) {
                     	<? endif; ?>
                 </div>
             </div>
-            <? endif; ?>
 			<!-- -- -->
             </div>
         </div>
+<? endif; ?>
+<!-- --- -->
+<div class="product-info__tab-body" id="review">
+<!-- -- -->
+<?
+$arSelect = Array("ID", "NAME", "PROPERTY_ITEM_ID", "PREVIEW_TEXT", "PROPERTY_AUTHOR_NAME", "DATE_CREATE"); 
+$item =$arResult['ID'];
+$arFilter_old = Array(
+	"IBLOCK_ID"=>12,
+	"PROPERTY_ITEM_ID" => $item,
+	"ACTIVE" => "Y",
+); 
+$res = CIBlockElement::GetList(Array(), $arFilter_old, false, Array("nPageSize"=>50), $arSelect);
+while($ob = $res->GetNextElement()) { 
+	$arRtem[] = $ob->GetFields();
+}
+$i = 0;
+while (count($arRtem) > $i) {?>
+<div class="author-review">
+	<div class="author-name">
+		<?=$arRtem[$i]["PROPERTY_AUTHOR_NAME_VALUE"]?>
+	</div>
+	<div class="preview-text">
+		<?=$arRtem[$i]["PREVIEW_TEXT"]?>
+	</div>
+	<div class="date-review">
+		<?=$arRtem[$i]["DATE_CREATE"]?>
+	</div>
+<?$i++;?>
+</div>
+<?}?>
+<!-- -- -->
+<?
+global $USER;
+if ($USER->IsAuthorized()) {
+	if (!empty($USER->GetParam("EMAIL"))) {
+		$m = $USER->GetParam("EMAIL");
+	}
+	if (!empty($USER->GetParam("NAME"))) {
+		$n = $USER->GetParam("NAME");
+	}?>
+<form action="" method="post" enctype="multipart/form-data" class="form-review">
+	<input type="hidden" name="URL" class="text" value="<?=$arResult['DETAIL_PAGE_URL']?>">
+	<input type="hidden" name="QAWSEDDER" class="text" value="">
+	<input type="hidden" name="PRODUCT" class="text" value="<?=$arResult['ID']?>">
+	<input type="hidden" name="PRODUCT_NAME" class="text" value="<?=$arResult['NAME']?>">
+	<input type="text" placeholder="Имя" value="<?=$n?>" name="NAME" class="real-reviw-name" required><br>
+	<input type="text" placeholder="email" value="<?=$m?>" name="EMAIL" class="real-reviw-mail" required><br>
+	<textarea placeholder="Ваш отзыв" name="REVIEW" class="real-reviw-text" required></textarea><br>
+	<input type="submit" class="real-reviw-submit" value="Отправить" name="OK">
+</form>
+<?} else {?>
+<div class="please_authorize">
+	<span><a class="auth_link" href="/auth/" target="_blank">Войдите на сайт</a> для того, чтобы оставить отзыв</span>
+</div>
+<?}?>
+</div>
+				<script>
+					$(".form-review").submit(function (e) { // Устанавливаем событие отправки для формы с id=form
+           			e.preventDefault();
+            		var form_data = $(this).serialize(); // Собираем все данные из формы
+					$('.submit-review').val('Отправляю отзыв...').prop('disabled', true);
+            		$.ajax({
+                			type: "POST", // Метод отправки
+                			url: "/reviews/add.php", // Путь до php файла отправителя
+                			data: form_data,
+                			success: function () {
+                    			$('.form-review').html("<div id='message'></div>");
+								$('#message').html('<h2>Спасибо!<br>Ваш отзыв принят</h2><div class="aboc-modal-close aboc-close" onclick="closeForm()"></div><div class="info">Отзыв появится здесь после проверки.</div>');
+                			}
+            			});
+        			});
+				</script>
     </div>
 </section>
 
