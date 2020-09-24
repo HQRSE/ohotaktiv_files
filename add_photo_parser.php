@@ -32,8 +32,7 @@ $code = $arr_code[$i];
 					if ($ar_props['VALUE'] == '') {
 						/* go search photo */
 						//$glob = glob("/var/www/sibirix2/data/www/ohotaktiv.ru/12dev/add_photo_parser/pics/*.*");
-$glob = glob(Bitrix\Main\Application::getDocumentRoot()."/12dev/add_photo_parser/pics/*.*");
-
+						$glob = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/*.{jpg,png,gif,PNG,JPG,GIF,bmp,BMP,jpeg,JPEG}', GLOB_BRACE);
 print_r($glob);
 echo "<p class='file_count'>file_count: ".count($glob)."</p><br>";
 						/* of search photo */
