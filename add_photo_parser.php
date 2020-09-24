@@ -3,7 +3,6 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Пакетная загрузка фото");
 require_once($_SERVER['DOCUMENT_ROOT']."/bitrix/modules/main/include/prolog_before.php");
 CModule::IncludeModule("iblock");
-$arSelect = Array("NAME", "ID", "DETAIL_PAGE_URL");
 
 // 48, 36, 486, 477, 947, 1148, 69, 1104, 1115, 161, 205, 146, 349, 1765, 57, 210, 68, 154, 2613 - все кроме зипа и рыбалки
 // 861 - рыбалка
@@ -15,7 +14,7 @@ $arSelect = Array("NAME", "ID", "DETAIL_PAGE_URL");
 <?
 /* *** */
 $PROPERTY_CODE = 'MORE_PHOTO';
-$arr_code = array('00195076');
+$arr_code = array('00001867'); // real
 $count = count($arr_code);
 $i = 0;
 while ($i < $count) {
@@ -32,7 +31,11 @@ $code = $arr_code[$i];
 				if($ar_props = $db_props->Fetch()) {
 					if ($ar_props['VALUE'] == '') {
 						/* go search photo */
+						//$glob = glob("/var/www/sibirix2/data/www/ohotaktiv.ru/12dev/add_photo_parser/pics/*.*");
+$glob = glob(Bitrix\Main\Application::getDocumentRoot()."/12dev/add_photo_parser/pics/*.*");
 
+print_r($glob);
+echo "<p class='file_count'>file_count: ".count($glob)."</p><br>";
 						/* of search photo */
 					}
 				}
