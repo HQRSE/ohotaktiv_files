@@ -32,26 +32,39 @@ $code = $arr_code[$i];
 					if ($ar_props['VALUE'] == '') {
 						/* go search photo */
 
-						$glob = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/*.{jpg,png,gif,PNG,JPG,GIF,bmp,BMP,jpeg,JPEG}', GLOB_BRACE);
-						//print_r($glob);
-
-						print_r($glob);
+						$glob = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/'.$code.'/*.{jpg,png,gif,PNG,JPG,GIF,bmp,BMP,jpeg,JPEG}', GLOB_BRACE); // после pics надо любой каталог типа
+						if ($glob) {
+							//$arFiles = array();
+							$c = 0;
+							while (count($glob) > $c) {
+								//print_r($glob);
+									$arVal[] = array("VALUE" => CFile::MakeFileArray('https://ohotaktiv.ru/12dev/add_photo_parser/pics/logo.png'));
+								//echo $glob[$c]."<br>";
+							$c++;
+							}
+							//CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $arVal);
+							//print_r($arVal);
+							//echo $arFiles[0];
+						} else {
+							$glob = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/'.$code.'*.{jpg,png,gif,PNG,JPG,GIF,bmp,BMP,jpeg,JPEG}', GLOB_BRACE);
+							//print_r($glob);
+						}
 						
 
 						/* of search photo */
 					}
 				}
 				//echo "<p class='id_prod'>ID PROD: ".$el."</p>";
-				$arFile = array(
-					0 => array("VALUE" => CFile::MakeFileArray("https://ohotaktiv.ru/12dev/add_photo_parser/pics/logo.png"),"DESCRIPTION"=>""),
-					1 => array("VALUE" => CFile::MakeFileArray("https://ohotaktiv.ru/12dev/add_photo_parser/pics/23.jpg"),"DESCRIPTION"=>"")
-				);
-				//CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $arFile);
+				//CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $arFiles);
 			}
 		}
 $i++;
 }
 /* *** */
+$arFile = CFile::MakeFileArray($_SERVER["DOCUMENT_ROOT"]."/12dev/add_photo_parser/pics/logo.png");
+CIBlockElement::SetPropertyValueCode(15769, "MORE_PHOTO", $arFile);
+//print_r($arFile);
+//CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $arFile);
 ?>
 
 </main>
