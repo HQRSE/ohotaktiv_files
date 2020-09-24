@@ -1,34 +1,56 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("Товары без фото");
+$APPLICATION->SetTitle("Пакетная загрузка фото");
 require_once($_SERVER['DOCUMENT_ROOT']."/bitrix/modules/main/include/prolog_before.php");
 CModule::IncludeModule("iblock");
-$arSelect = Array("NAME", "ID", "DETAIL_PAGE_URL", "SECTION_ID");
-// 48, 36, 486, 477, 947, 1148, 69, 1104, 1115, 161, 205, 146, 349, 1765, 57, 210, 68, 154, 2613 - все кроме зипа и рыбалки
-// 
-$arFilter = Array("IBLOCK_ID"=>10, "SECTION_ID"=>'861', "INCLUDE_SUBSECTIONS" => "Y", "PREVIEW_PICTURE" => false);
-$res = CIBlockElement::GetList(Array("NAME"=>"ASC"), $arFilter, false, Array("nPageSize"=>5000), $arSelect);
-?>
-<div class="container centering">
-<?
-//echo count($res['arResult']);
-//print_r($res);
-$res->NavStart(0);
-$i = 0;
-while($ob = $res->GetNextElement())
-{
-$arFields = $ob->GetFields();
-{?>
-<?=$arFields['ID']?> - <a target="_blank" href="<?=$arFields['DETAIL_PAGE_URL']?>"><?=$arFields['NAME']?></a> <!-- - Подраздел №<?=$arFields['IBLOCK_SECTION_ID']?>  --> </br>
-<?
-$i++;
-}
+$arSelect = Array("NAME", "ID", "DETAIL_PAGE_URL");
 
-}
-echo "--> ".$i."<br>";
-$navStr = $res->GetPageNavStringEx($navComponentObject, "Страницы:", ".default");
-echo $navStr;
+// 48, 36, 486, 477, 947, 1148, 69, 1104, 1115, 161, 205, 146, 349, 1765, 57, 210, 68, 154, 2613 - все кроме зипа и рыбалки
+// 861 - рыбалка
+
+// Коды из имен файлов/папок: 00195076, 00195077
+// Их ID: 272450, 272452
 ?>
-</div>
-<br><br><br><br>
+<main class="catalog-page category-catalog-page quantity_page_style centering" id="start">
+<?
+/* *** */
+$PROPERTY_CODE = 'MORE_PHOTO';
+$arr_code = array('00195076');
+$count = count($arr_code);
+$i = 0;
+while ($i < $count) {
+$code = $arr_code[$i];
+	$results = $DB->Query("SELECT IBLOCK_ELEMENT_ID FROM b_iblock_element_property WHERE VALUE='$code' AND DESCRIPTION='Код'");
+		if ($row = $results->Fetch())
+		{
+		$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM");
+		$res = CIBlockElement::GetList(array(), array('IBLOCK_ID' => 10, 'ID' => $row['IBLOCK_ELEMENT_ID'], $arSelect));
+        $item = $res->Fetch();
+			if ($item['ACTIVE'] = 'Y') { 
+			$el = $item['ID']; 
+
+$db_props = CIBlockElement::GetProperty(10, $el, "sort", "asc", Array("CODE"=>$PROPERTY_CODE)); // XXX - множественное свойства типа "Строка"
+if($ar_props = $db_props->Fetch()):
+				//echo "<pre>".print_r($ar_props, true)."<pre>";
+				if ($ar_props['VALUE'] == '') {
+echo "123<br>";
+}
+endif;
+				//print_r($item);
+				//echo "<p class='id_prod'>ID PROD: ".$el."</p>";
+$arFile = array(
+	0 => array("VALUE" => CFile::MakeFileArray("https://ohotaktiv.ru/12dev/add_photo_parser/pics/logo.png"),"DESCRIPTION"=>""),
+	1 => array("VALUE" => CFile::MakeFileArray("https://ohotaktiv.ru/12dev/add_photo_parser/pics/23.jpg"),"DESCRIPTION"=>"")
+);
+				//CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $arFile);
+			}
+		}
+$i++;
+	}
+/* *** */
+?>
+
+</main>
+
+<br>
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
