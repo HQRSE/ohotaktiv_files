@@ -27,26 +27,25 @@ $code = $arr_code[$i];
 		$res = CIBlockElement::GetList(array(), array('IBLOCK_ID' => 10, 'ID' => $row['IBLOCK_ELEMENT_ID'], $arSelect));
         $item = $res->Fetch();
 			if ($item['ACTIVE'] = 'Y') { 
-			$el = $item['ID']; 
+				$el = $item['ID']; 
+				$db_props = CIBlockElement::GetProperty(10, $el, "sort", "asc", Array("CODE"=>$PROPERTY_CODE));
+				if($ar_props = $db_props->Fetch()) {
+					if ($ar_props['VALUE'] == '') {
+						/* go search photo */
 
-$db_props = CIBlockElement::GetProperty(10, $el, "sort", "asc", Array("CODE"=>$PROPERTY_CODE)); // XXX - множественное свойства типа "Строка"
-if($ar_props = $db_props->Fetch()):
-				//echo "<pre>".print_r($ar_props, true)."<pre>";
-				if ($ar_props['VALUE'] == '') {
-echo "123<br>";
-}
-endif;
-				//print_r($item);
+						/* of search photo */
+					}
+				}
 				//echo "<p class='id_prod'>ID PROD: ".$el."</p>";
-$arFile = array(
-	0 => array("VALUE" => CFile::MakeFileArray("https://ohotaktiv.ru/12dev/add_photo_parser/pics/logo.png"),"DESCRIPTION"=>""),
-	1 => array("VALUE" => CFile::MakeFileArray("https://ohotaktiv.ru/12dev/add_photo_parser/pics/23.jpg"),"DESCRIPTION"=>"")
-);
+				$arFile = array(
+					0 => array("VALUE" => CFile::MakeFileArray("https://ohotaktiv.ru/12dev/add_photo_parser/pics/logo.png"),"DESCRIPTION"=>""),
+					1 => array("VALUE" => CFile::MakeFileArray("https://ohotaktiv.ru/12dev/add_photo_parser/pics/23.jpg"),"DESCRIPTION"=>"")
+				);
 				//CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $arFile);
 			}
 		}
 $i++;
-	}
+}
 /* *** */
 ?>
 
