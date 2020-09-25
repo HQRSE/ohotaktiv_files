@@ -20,30 +20,39 @@ $i = 0;
 while ($i < $count) {
 $code = $arr_code[$i];
 	$results = $DB->Query("SELECT IBLOCK_ELEMENT_ID FROM b_iblock_element_property WHERE VALUE='$code' AND DESCRIPTION='Код'");
-		if ($row = $results->Fetch())
+		while ($row = $results->Fetch())
 		{
-		$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM");
-		$res = CIBlockElement::GetList(array(), array('IBLOCK_ID' => 10, 'ID' => $row['IBLOCK_ELEMENT_ID'], $arSelect));
-        $item = $res->Fetch();
-			if ($item['ACTIVE'] = 'Y') { 
+		$res = CIBlockElement::GetList(array(), array('IBLOCK_ID' => 10, 'ID' => $row['IBLOCK_ELEMENT_ID'], ['ACTIVE'] => 'Y'));
+			if ($item = $res->Fetch()) { 
 				$el = $item['ID']; 
+echo $el."<-------";
+print_r($item);
 				$db_props = CIBlockElement::GetProperty(10, $el, "sort", "asc", Array("CODE"=>$PROPERTY_CODE));
 				if($ar_props = $db_props->Fetch()) {
-					if ($ar_props['VALUE'] == '') {
+					if (empty($ar_props['VALUE'])) {
 						/* go search photo */
-
+						//echo "go!<br>";
 						$glob = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/'.$code.'/*.{jpg,png,gif,PNG,JPG,GIF,bmp,BMP,jpeg,JPEG}', GLOB_BRACE); // после pics надо любой каталог типа
 						if ($glob) {
 							//$arFiles = array();
 							$c = 0;
 							while (count($glob) > $c) {
 								//print_r($glob);
-									$arVal[] = array("VALUE" => CFile::MakeFileArray('https://ohotaktiv.ru/12dev/add_photo_parser/pics/logo.png'));
-								//echo $glob[$c]."<br>";
+								$z = $glob[$c];
+								$pic = CFile::MakeFileArray($z);
+								CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $pic);
+								$arFile = CFile::MakeFileArray(Bitrix\Main\Application::getDocumentRoot()."/12dev/add_photo_parser/pics/logo.png");
+								//CIBlockElement::SetPropertyValueCode($el, "MORE_PHOTO", $arFile); // 15769
+								echo "glob: ".$glob[$c]."<br>";
+								//echo $pic."<br>";
+								echo "pic: ";
+								print_r($pic);
+								//echo $pic."<br>";
+								echo "arFile: ";
+								print_r($arFile);
 							$c++;
 							}
-							//CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $arVal);
-							//print_r($arVal);
+
 							//echo $arFiles[0];
 						} else {
 							$glob = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/'.$code.'*.{jpg,png,gif,PNG,JPG,GIF,bmp,BMP,jpeg,JPEG}', GLOB_BRACE);
@@ -61,10 +70,11 @@ $code = $arr_code[$i];
 $i++;
 }
 /* *** */
-$arFile = CFile::MakeFileArray($_SERVER["DOCUMENT_ROOT"]."/12dev/add_photo_parser/pics/logo.png");
-CIBlockElement::SetPropertyValueCode(15769, "MORE_PHOTO", $arFile);
+//$arFile = CFile::MakeFileArray(Bitrix\Main\Application::getDocumentRoot()."/12dev/add_photo_parser/pics/logo.png");
+//CIBlockElement::SetPropertyValueCode(15769, "MORE_PHOTO", $arFile);
 //print_r($arFile);
 //CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $arFile);
+//echo Bitrix\Main\Application::getDocumentRoot()."/12dev/add_photo_parser/pics/logo.png";
 ?>
 
 </main>
