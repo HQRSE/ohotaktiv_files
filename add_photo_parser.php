@@ -56,6 +56,5 @@ $i++;
 ?>
 
 </main>
-
 <br>
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
