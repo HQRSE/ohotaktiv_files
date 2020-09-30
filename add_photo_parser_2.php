@@ -6,7 +6,8 @@ CModule::IncludeModule("iblock");
 ?>
 <main class="catalog-page category-catalog-page quantity_page_style centering" id="start">
 <?
-$glob_dir = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/*/', GLOB_ONLYDIR); // после pics надо любой каталог типа
+
+$glob_dir = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/*/*/', GLOB_ONLYDIR); // после pics надо любой каталог типа
 if ($glob_dir) {
 	$d = 0;
 	while (count($glob_dir) > $d) {
@@ -17,7 +18,7 @@ if ($glob_dir) {
 	}
 }
 
-$glob_file = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/*.{jpg,png,gif,PNG,JPG,GIF,bmp,BMP,jpeg,JPEG}', GLOB_BRACE);
+$glob_file = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/*/*.{jpg,png,gif,PNG,JPG,GIF,bmp,BMP,jpeg,JPEG}', GLOB_BRACE);
 if ($glob_file) {
 	$minus_array = array(".","jpg","png","gif","PNG","JPG","GIF","bmp","BMP","jpeg","JPEG");
 	$f = 0;
@@ -33,11 +34,11 @@ if ($glob_file) {
 
 $IBLOCK = 10;
 $PROPERTY_CODE = 'MORE_PHOTO';
-$step = 2;
+$step = 5;
 $count = count($full_codes);
 $h_counter = $_GET['h_counter']; // - start h_counter = 0
 
-while ($h_counter < 6) {
+while ($h_counter < $count) {
 $code = $full_codes[$h_counter];
 	$results = $DB->Query("SELECT IBLOCK_ELEMENT_ID FROM b_iblock_element_property WHERE VALUE='$code' AND DESCRIPTION='Код'");
 		while ($row = $results->Fetch())
@@ -49,33 +50,33 @@ $code = $full_codes[$h_counter];
 				if($ar_props = $db_props->Fetch()) {
 					if (empty($ar_props['VALUE'])) {
 						/* go search photo */
-						$glob_dir = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/'.$code.'/*.{jpg,png,gif,PNG,JPG,GIF,bmp,BMP,jpeg,JPEG}', GLOB_BRACE); // после pics надо любой каталог типа
+						$glob_dir = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/*/'.$code.'/*.{jpg,png,gif,PNG,JPG,GIF,bmp,BMP,jpeg,JPEG}', GLOB_BRACE); // после pics надо любой каталог типа
 						if ($glob_dir) {
 							$d = 0;
 							while (count($glob_dir) > $d) {
 								$pic = CFile::MakeFileArray($glob_dir[$d]);
-								//CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $pic);
+								CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $pic);
 								echo "code_dir_".$d.": ".basename($glob_dir[$d])."<br>";
 							$d++;
 							}
 						} 
-						$glob_file = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/'.$code.'.{jpg,png,gif,PNG,JPG,GIF,bmp,BMP,jpeg,JPEG}', GLOB_BRACE);
+						$glob_file = glob(Bitrix\Main\Application::getDocumentRoot().'/12dev/add_photo_parser/pics/*/'.$code.'.{jpg,png,gif,PNG,JPG,GIF,bmp,BMP,jpeg,JPEG}', GLOB_BRACE);
 						if ($glob_file) {
 							$pic = CFile::MakeFileArray($glob_file[0]);
 							echo "code_file: ".basename($glob_file[0])."<br>";
-							//CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $pic);
+							CIBlockElement::SetPropertyValueCode($el, $PROPERTY_CODE, $pic);
 						}
 						/* off search photo */
 					}
 				}
 			}
 		}
-	/*$z = $h_counter % $step;
+	$z = $h_counter % $step;
 	if ($z == 0) {
 		$h_counter++;
 		header("refresh: 2; url=/12dev/add_photo_parser/index.php?h_counter=$h_counter");
 		break;
-}*/
+	}
 	$h_counter++;
 }
 
