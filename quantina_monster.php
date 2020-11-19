@@ -1,6 +1,6 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("mazafaka");
+$APPLICATION->SetTitle("QUANTINA");
 ?>
   <style>
    .quantity_page_style { 
