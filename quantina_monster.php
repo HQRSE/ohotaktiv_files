@@ -53,20 +53,24 @@ function xml2assoc(&$xml){
 $glob = glob("/var/www/sibirix2/data/www/ohotaktiv.ru/obmen_files/quantity/*.xml");
 
 echo "<br><br><br><a class='file_count' href='/12dev/quantity/qua_visual.php?h_counter=0&file_c=0&truncate=yes'>>>> BEGIN (!!!BEFORE_TRUNCATE_TWO_TABLES!!!) <<<</a><br><br><br>";
+
 echo "<p class='file_count'>file_count: ".count($glob)."</p><br>";
 
 if ($_GET['truncate']) {
-	$tr_tb1 = 'TRUNCATE TABLE quantina';
-	$tr_tb2 = 'TRUNCATE TABLE b_catalog_store_product';
+$tr_tb1 = 'TRUNCATE TABLE quantina';
+$tr_tb2 = 'TRUNCATE TABLE b_catalog_store_product';
 	$clear = $DB->Query($tr_tb1);
 	$clear2 = $DB->Query($tr_tb2);
 }
 
 $file_count = $_GET['file_c'];
+
 $h_counter = $_GET['h_counter']; // start h_counter = 0
 
 $xml = new XMLReader();
+
 $q_file = $glob[$file_count];
+
 $xml->open($q_file);
 $assoc = xml2assoc($xml);
 
@@ -75,18 +79,19 @@ $assoc = xml2assoc($xml);
 echo "<p class='file_name'>file: ".$q_file."</p>";
 /* *** */
 $load_time_start = mktime();
+
 $all_items = count($assoc[0]['val']);
 $all_files = count($glob);
+
 $end = $all_items;
 $step = 150; // 200
+
 $the_word = "IZ-";
 
 echo "<p class='all_items'>all items: ".$all_items."</p>";
-
 $sql = '';
 $sql = 'INSERT INTO quantina (CODE,SHOP,QUANTITY) VALUES ';
 $code_go_sql = [];
-
 while ($h_counter < $end) { 
 
 	$code_xml = str_replace(' ', '', $assoc[0]['val'][$h_counter]['atr']['GUID']);
@@ -230,7 +235,7 @@ while ($h_counter < $end) {
 	$ins_sql = substr($sql,0,-1);
 	echo "ins_SQL: ".$ins_sql."<br>";
 
-	$tb_insert = $DB->Query($ins_sql);
+$tb_insert = $DB->Query($ins_sql);
 
    $arSelect = array(
       "ID","PROPERTY_CML2_TRAITS"
@@ -283,14 +288,15 @@ while ($h_counter < $end) {
 	}
 
 }
-/* *** */
+/* ******************************************************************************************************************************************** */
 //print_r($code_go_sql);
 //echo "fcK: ".implode(",", $code_go_sql)."<br>";
 	echo "<br>**********************************************************************************************************************************<br>";
 	//SELECT
-	echo '<br>UPD_SQL: '.$sql_u.' <-- SQL_2<br>';
 
-/* *** */
+echo '<br>UPD_SQL: '.$sql_u.' <-- SQL_2<br>';
+
+/* ********************************************************* */
 
 
 
@@ -301,6 +307,7 @@ if ($h_counter >= $end && $file_count < $all_files) {
 	$tb_trash = $DB->Query($sql_trash);
 	$merge_sql = 'REPLACE INTO b_catalog_store_product (ID, PRODUCT_ID, AMOUNT, STORE_ID) SELECT ID, REAL_ID, QUANTITY, SHOP FROM quantina';
 	$tb_merge = $DB->Query($merge_sql);
+
 	header("refresh: 2; url=/12dev/quantity/qua_visual.php?h_counter=0&file_c=$file_count");
 }
 
